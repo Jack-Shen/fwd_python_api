@@ -41,8 +41,9 @@ class _fwdRequest:
         return destination
 
 class fwdApi: 
-    def __init__(self, base_url, username, token, headers):
+    def __init__(self, base_url, username, token, network, headers):
         self.base_url = base_url
+        self.network = network
         self.fwdRequest = _fwdRequest(self.base_url, auth=(username, token), headers=headers)
     def get_network_id(self, network_name):
         all_network = self.get_all_networks().json()
@@ -229,21 +230,27 @@ class fwdApi:
 
         return data
 
-    def post_nqe_check(self, snapshotID, query, name=None, getReport=False):
-        """query should be a delimited string of the query. NQE query can be separated with space instead of newline"""
-        data = {}
-        data["checkType"] = "NQE"
-        if name:
-            data['name'] = name
-        data['query'] = query
-        result = self.fwdRequest.post("/snapshots/{}/checks".format(snapshotID), json=data)
+    def post_nqe_check(self, query, snapshot=None):
+        url = "/nqe?networkId={}".format(self.network)
+        if snapshot: 
+            url = "/nqe?snapshotId={}".format(snapshot)
         
-        print(result.text)
+        payload = {"query": query}
         
+        result = self.fwdRequest.post(url, json=payload)
         
+        return result.json()
         
-        #if getReport: 
-            
+    def post_nqe_para_check(self, queryId, params, snapshot=None):
+        url = "/nqe?networkId={}".format(self.network)
+        if snapshot: 
+            url = "/nqe?snapshotId={}".format(snapshot)
+        payload = {
+            "queryId": queryId,
+            "parameters": params
+            } 
+        result = self.fwdRequest.post(url, json=payload)
+        return result.json()
 
     def post_existance_check(self, snapshotID, FROM=None, TO=None, THROUGH=None, INGRESS=None, EGRESS=None, flowTypes=None,  permitAll=True):
         """
@@ -306,6 +313,7 @@ class fwdApi:
         print(self.fwdRequest.post("/snapshots/{}/checks".format(snapshotID), json=data).text)
         
     def post_reachability_check(self, snapshotID, FROM=None, TO=None, permitAll=False):
+        
         """
     
         Parameters
@@ -338,7 +346,14 @@ class fwdApi:
         result = self.fwdRequest.post("/snapshots/{}/checks".format(snapshotID), json=data)
         print(result.text)
         return result
+    def get_intent_checks(self, snapshotID, checkType): 
+        #get all intent checks
+        #checkType: Isolation, Reachability, Existential, QueryStringBased, Predefined, NQE
         
+        url = "/snapshots/{}/checks?type={}".format(snapshotID, checkType)
+        print(url)
+        result = self.fwdRequest.get(url)
+        return result
 def gen_headers(value_type, value, header_type="PacketFilter", direction=None, notFilter=False):
     """
     helper function constructs json header format
@@ -427,4 +442,3 @@ def gen_location(SubnetLocationFilter=None, HostFilter=None, DeviceFilter=None, 
                 return { 'type': x, 'value': y}
     
     
-#TEST CASES AND EXAMPLES
