@@ -15,12 +15,12 @@ from fwd_json import fwdApi
 username = os.environ['fwd_saas_user']
 token = os.environ['fwd_saas_token']
 network = 137407
-fwd = fwdApi("https://fwd.app/api", username, token,network, {}, Verify=True)
+fwd = fwdApi("https://fwd.app/api", username, token,network, {}, verify=False)
 nqeUrl = "https://fwd.app/api/nqe?networkId={}".format(network)
 
 
 # In[2]:
-
+print(fwd.get_all_networks)
 
 #start collection
 fwd.start_collection(network).text
