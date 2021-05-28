@@ -6,29 +6,30 @@ import os
 headers = {}
 
 class _fwdRequest:
-    def __init__(self, base_url, **kwargs):
+    def __init__(self, base_url, Verify=True, **kwargs):
         self.base_url = base_url
         self.session = requests.Session()
         self.session.headers.update({'Content-Type': "application/json"})
+        self.Verify = Verify
         for arg in kwargs:
             if isinstance(kwargs[arg], dict):
                 kwargs[arg] = self.__deep_merge(getattr(self.session, arg), kwargs[arg])
             setattr(self.session, arg, kwargs[arg])        
         
     def requests(self, method, url, **kwargs):
-        return self.session.request(method, self.base_url+url, **kwargs)
+        return self.session.request(method, self.base_url+url, self.Verify, **kwargs)
 
     def get(self, endpoint, **kwargs):
-        return self.session.get(self.base_url+endpoint, **kwargs)
+        return self.session.get(self.base_url+endpoint,self.Verify, **kwargs)
 
-    def post(self, endpoint, **kwargs):
-        return self.session.post(self.base_url+endpoint, **kwargs)
+    def post(self, endpoint,**kwargs):
+        return self.session.post(self.base_url+endpoint, self.Verify,**kwargs)
 
     def patch(self, endpoint, **kwargs):
-        return self.session.patch(self.base_url+endpoint, **kwargs)
+        return self.session.patch(self.base_url+endpoint, self.Verify,**kwargs)
 
     def delete(self, endpoint, **kwargs):
-        return self.session.delete(self.base_url+endpoint, **kwargs)
+        return self.session.delete(self.base_url+endpoint, self.Verify,**kwargs)
 
     @staticmethod
     def __deep_merge(source, destination):
@@ -41,10 +42,10 @@ class _fwdRequest:
         return destination
 
 class fwdApi: 
-    def __init__(self, base_url, username, token, network, headers):
+    def __init__(self, base_url, username, token, network, headers, Verify=True):
         self.base_url = base_url
         self.network = network
-        self.fwdRequest = _fwdRequest(self.base_url, auth=(username, token), headers=headers)
+        self.fwdRequest = _fwdRequest(self.base_url, auth=(username, token), Verify=True, headers=headers)
     def get_network_id(self, network_name):
         all_network = self.get_all_networks().json()
         for n in all_network:
