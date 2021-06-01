@@ -1,0 +1,25 @@
+ip access-list standard BASELINE_ACL
+   10 permit 192.168.252.94/31
+   20 permit host 192.168.252.220
+   30 permit host 192.168.252.221
+   40 permit 192.168.252.200/29
+   50 permit 192.168.252.208/30
+   60 permit host 192.168.253.26
+   70 permit 192.168.254.88/30
+   80 permit 192.168.254.96/30
+   90 permit host 192.168.254.242
+   100 permit host 192.168.254.243
+   110 permit host 192.168.254.244
+   120 permit host 192.168.254.245
+   130 permit host 192.168.254.246
+   140 permit host 192.168.254.247
+   150 permit host 192.168.254.248
+   160 permit host 192.168.254.249
+   170 permit host 192.168.254.220
+   180 permit host 192.168.254.221
+   190 permit host 192.168.255.1
+   200 permit host 192.168.255.2
+   210 permit host 192.168.255.26
+   220 permit host 192.168.255.82
+   230 permit host 192.168.255.96
+   240 permit host 192.168.255.97
