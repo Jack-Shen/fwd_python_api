@@ -42,9 +42,9 @@ def path_command(ack,say, body):
     say("user `{}`".format(body['user_name']))
     srcIP = body['text'].split(' ')[0]
     dstIP = body['text'].split(' ')[1]
-    data = fwd.get_path_search(latest_snap,srcIP, dstIP).text
-    say("path search from `{}` to `{}`".format(srcIP, dstIP))
-    say(f"{data}")
+    data = fwd.get_path_search(latest_snap,srcIP, dstIP).json()
+    blocks=gen_block(srcIP, dstIP, data)
+    say(blocks=gen_block(srcIP, dstIP, data), text="block test")
     ack()
 
 @app.command("/checkconfig")
@@ -109,7 +109,45 @@ def ack_shortcut(ack):
 def submission(ack):
     ack()
 
-
+def gen_block(src, dst, path_data):
+    path_info = path_data['info']['paths'][0]
+    block= [
+	{
+		"type": "header",
+		"text": {
+			"type": "plain_text",
+			"text": f'src: {src} dst: {dst}'
+		}
+	}]
+    for index, i in enumerate(path_info['hops']):
+        deviceName = i['deviceName']
+        egressInt= i['egressInterface']
+        ingressInt = i['ingressInterface']
+        block.append({"type": "section", "text":{ "type": "mrkdwn", "text": f'*HOP{index}*-->'}})
+        block.append({"type": "section", "text":{ "type": "mrkdwn", "text": f'Ingress Interface: {ingressInt}'}})
+        block.append({"type": "section", "text":{ "type": "mrkdwn", "text": f'                Device Name: {deviceName}'}})
+        block.append({"type": "section", "text":{ "type": "mrkdwn", "text": f'                Egress Interface: {egressInt}'}})
+    block.append({
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "Path result in fwd.app", 
+			},
+			"accessory": {
+				"type": "button",
+				"text": {
+					"type": "plain_text",
+					"text": "Link",
+					"emoji": True
+				},
+				"value": "click_me_123",
+				"url": path_data['queryUrl'],
+				"action_id": "button-action"
+			}})
+    block.append({
+			"type": "divider"
+		}) 
+    return block
 if __name__ == "__main__":
     # export SLACK_APP_TOKEN=xapp-***
     # export SLACK_BOT_TOKEN=xoxb-***
