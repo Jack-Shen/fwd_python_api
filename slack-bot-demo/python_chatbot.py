@@ -123,10 +123,9 @@ def gen_block(src, dst, path_data):
         deviceName = i['deviceName']
         egressInt= i['egressInterface']
         ingressInt = i['ingressInterface']
-        block.append({"type": "section", "text":{ "type": "mrkdwn", "text": f'*HOP{index}*-->'}})
-        block.append({"type": "section", "text":{ "type": "mrkdwn", "text": f'Ingress Interface: {ingressInt}'}})
-        block.append({"type": "section", "text":{ "type": "mrkdwn", "text": f'                Device Name: {deviceName}'}})
-        block.append({"type": "section", "text":{ "type": "mrkdwn", "text": f'                Egress Interface: {egressInt}'}})
+        block.append({"type": "section", "text":{ "type": "mrkdwn", "text": f'*HOP{index}*--> {deviceName}'}})
+        block.append({"type": "section", "text":{ "type": "mrkdwn", "text": f'IN: {ingressInt}'}})
+        block.append({"type": "section", "text":{ "type": "mrkdwn", "text": f'OUT: {egressInt}'}})
     block.append({
 			"type": "section",
 			"text": {
