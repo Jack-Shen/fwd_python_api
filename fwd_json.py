@@ -1,4 +1,7 @@
 import requests
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 import sys
 import os
 import json
@@ -358,15 +361,37 @@ class fwdApi:
         result = self.fwdRequest.get(url)
         return result
 
-    def add_intranet_node(self, snapshotID, IntranetName, DeviceName, Interface,
+    def get_intranet_nodes(self, snapshotID): 
+        url = "/snapshots/{}/intranetNodes".format(snapshotID)
+        print(url)
+        result = self.fwdRequest.get(url)
+        print(result.json())
+        return result 
+
+    def add_intranet_node(self, NetworkID, snapshotID, IntranetName, DeviceName, Interface,
             SubnetAutoDiscovery="IP_ROUTES", advertisesDefaultRoute=False, locationId="default"): 
         """
         SubnetAutoDiscovery=[ NONE, IP_ROUTES, BGP_ROUTES ]
         """
-        url = "/snapshots/{}/intranetNodes".format(snapshotID)
+        existing_intranet = self.get_intranet_nodes(snapshotID).json()
+        existing_name = [ i['name']  for i in
+                existing_intranet['intranetNodes'] ]
+        url = "/snapshots/{}/intranetNodes/{}".format(snapshotID, IntranetName)
+        all_devices = self._get_devices(NetworkID)
+        locationId = [ i['locationId'] for i in all_devices.json() if i['name'] ==
+                DeviceName and 'locationId' in i ]
+
+        print(locationId)
+
+        if len(locationId) == 0: 
+            locationId="default"
+        else: 
+            locationId = locationId[0]
+
+        print("LOCATION ID IS##### {}".format(locationId))
         data = {
-                'name' : IntranetName
-                #'locationId' : locationId
+                'name' : IntranetName,
+                'locationId' : locationId
                 }
         data['connections']=[]
         uplinkPort = {
@@ -387,7 +412,13 @@ class fwdApi:
         payload = {
                 'intranetNodes' : [data]
                 }
-        result = self.fwdRequest.put(url, json=payload)
+        payload = data
+        if IntranetName in existing_name: 
+            print("intranet already exist")
+            result = self.fwdRequest.post(url+"/connections", json=conn)
+        else: 
+            print("new intranet node")
+            result = self.fwdRequest.put(url, json=payload)
         print(payload)
         print(result.text)
         return result
