@@ -1,7 +1,7 @@
 import requests
 import sys
 import os
-
+import json
 #custom headers here. leave empty if not needed. does not need application/json
 headers = {}
 
@@ -26,6 +26,9 @@ class _fwdRequest:
 
     def patch(self, endpoint, **kwargs):
         return self.session.patch(self.base_url+endpoint, **kwargs)
+
+    def put(self, endpoint, **kwargs): 
+        return self.session.put(self.base_url+endpoint, **kwargs)
 
     def delete(self, endpoint, **kwargs):
         return self.session.delete(self.base_url+endpoint, **kwargs)
@@ -354,6 +357,44 @@ class fwdApi:
         print(url)
         result = self.fwdRequest.get(url)
         return result
+
+    def add_intranet_node(self, snapshotID, IntranetName, DeviceName, Interface,
+            SubnetAutoDiscovery="IP_ROUTES", advertisesDefaultRoute=False, locationId="default"): 
+        """
+        SubnetAutoDiscovery=[ NONE, IP_ROUTES, BGP_ROUTES ]
+        """
+        url = "/snapshots/{}/intranetNodes".format(snapshotID)
+        data = {
+                'name' : IntranetName
+                #'locationId' : locationId
+                }
+        data['connections']=[]
+        uplinkPort = {
+                'device': DeviceName,
+                'port': Interface
+                }
+
+
+        conn = {
+                'uplinkPort' : uplinkPort,
+                'name' : DeviceName+"_"+Interface,
+                'subnetAutoDiscovery' : SubnetAutoDiscovery,
+                'advertisesDefaultRoute' : advertisesDefaultRoute
+                }
+
+        data['connections'].append(conn)
+
+        payload = {
+                'intranetNodes' : [data]
+                }
+        result = self.fwdRequest.put(url, json=payload)
+        print(payload)
+        print(result.text)
+        return result
+
+
+
+
 def gen_headers(value_type, value, header_type="PacketFilter", direction=None, notFilter=False):
     """
     helper function constructs json header format
@@ -441,4 +482,4 @@ def gen_location(SubnetLocationFilter=None, HostFilter=None, DeviceFilter=None, 
             else:
                 return { 'type': x, 'value': y}
     
-    
+

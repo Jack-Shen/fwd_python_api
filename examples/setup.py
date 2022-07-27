@@ -9,7 +9,7 @@ sys.path.append("..")
 import fwd_json
 from fwd_json import fwdApi
 username = os.environ['fwd_saas_user']
-token = os.environ['fwd_saas_token']
+token = os.environ['fwd_saas_password']
 
 network = 137407
 
