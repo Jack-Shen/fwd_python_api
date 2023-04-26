@@ -1,0 +1,138 @@
+{
+    "deviceRegions": [
+        {
+            "device": "L2-ACC4",
+            "region": "EAST"
+        },
+        {
+            "device": "L2-ACC5",
+            "region": "EAST"
+        },
+        {
+            "device": "Peering-Router-A",
+            "region": "WEST"
+        },
+        {
+            "device": "Peering-Router-B",
+            "region": "EAST"
+        },
+        {
+            "device": "Colo-Interconnect",
+            "region": "WEST"
+        },
+        {
+            "device": "DMZ-DIST-A",
+            "region": "EAST"
+        },
+        {
+            "device": "Peering-ISP",
+            "region": "WEST"
+        },
+        {
+            "device": "DIST-R2-B",
+            "region": "EAST"
+        },
+        {
+            "device": "DIST-R1-B",
+            "region": "NORTH"
+        },
+        {
+            "device": "DIST-R2-A",
+            "region": "WEST"
+        },
+        {
+            "device": "DIST-R1-A",
+            "region": "EAST"
+        },
+        {
+            "device": "CLOUD-R1-A",
+            "region": "NORTH"
+        },
+        {
+            "device": "CLOUD-R2-B",
+            "region": "WEST"
+        },
+        {
+            "device": "CLOUD-R1-B",
+            "region": "SOUTH"
+        },
+        {
+            "device": "CLOUD-R2-A",
+            "region": "NORTH"
+        },
+        {
+            "device": "L2-ACC1",
+            "region": "EAST"
+        },
+        {
+            "device": "EOS-ACC-14-B",
+            "region": "EAST"
+        },
+        {
+            "device": "L2-ACC6",
+            "region": "EAST"
+        },
+        {
+            "device": "EOS-DIST-01-B",
+            "region": "SOUTH"
+        },
+        {
+            "device": "EOS-ACC-13-B",
+            "region": "EAST"
+        },
+        {
+            "device": "L2-ACC7",
+            "region": "SOUTH"
+        },
+        {
+            "device": "EOS-DIST-01-A",
+            "region": "SOUTH"
+        },
+        {
+            "device": "EOS-ACC-12-A",
+            "region": "EAST"
+        },
+        {
+            "device": "EOS-ACC-11-A",
+            "region": "NORTH"
+        },
+        {
+            "device": "L2-ACC2",
+            "region": "EAST"
+        },
+        {
+            "device": "L2-ACC3",
+            "region": "WEST"
+        }
+    ],
+    "ntpServers": [
+        {
+            "region": "EAST",
+            "servers": [
+                "10.6.0.2",
+                "10.6.0.3"
+            ]
+        },
+        {
+            "region": "WEST",
+            "servers": [
+                "11.33.1.7",
+                "11.33.1.23"
+            ]
+        },
+        {
+            "region": "NORTH",
+            "servers": [
+                "12.33.1.7",
+                "11.33.1.23"
+            ]
+        },
+        {
+            "region": "SOUTH",
+            "servers": [
+                "13.33.1.7",
+                "11.33.1.23"
+            ]
+        }
+    ]
+}
